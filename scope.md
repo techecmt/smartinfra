@@ -1,6 +1,3 @@
-@AGENTS.md
-
-
 Your task is to transform the existing project into a highly polished, premium, one-page website for:
 
 SMART INFRATECH PTE. LTD.
