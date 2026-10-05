@@ -47,6 +47,7 @@ type SectionHeadingProps = {
   tone?: "light" | "dark";
   className?: string;
   size?: "md" | "lg" | "xl";
+  as?: "h1" | "h2";
 };
 
 const lineVariants = {
@@ -68,14 +69,16 @@ export function SectionHeading({
   tone = "light",
   className = "",
   size = "lg",
+  as = "h2",
 }: SectionHeadingProps) {
+  const Heading = motion[as];
   const sizes = {
     md: "text-[1.9rem] sm:text-5xl lg:text-[3.5rem]",
     lg: "text-[2.125rem] sm:text-5xl lg:text-6xl",
     xl: "text-[2.5rem] sm:text-6xl lg:text-7xl xl:text-[5.5rem]",
   }[size];
   return (
-    <motion.h2
+    <Heading
       id={id}
       initial="hidden"
       whileInView="visible"
@@ -91,6 +94,6 @@ export function SectionHeading({
           </motion.span>{" "}
         </span>
       ))}
-    </motion.h2>
+    </Heading>
   );
 }

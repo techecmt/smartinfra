@@ -1,7 +1,8 @@
-import { company, navItems } from "@/lib/content";
+import Link from "next/link";
+import { company, navHref, navItems } from "@/lib/content";
 import { Logo } from "@/components/ui/logo";
 
-export function Footer() {
+export function Footer({ home = true }: { home?: boolean }) {
   return (
     <footer className="relative bg-white text-ink">
       <div aria-hidden className="h-px w-full bg-signal" />
@@ -63,12 +64,12 @@ export function Footer() {
             <ul className="mt-4 space-y-0">
               {navItems.map((item) => (
                 <li key={item.id}>
-                  <a
-                    href={`#${item.id}`}
+                  <Link
+                    href={navHref(item, home)}
                     className="inline-block py-1.5 hover:text-signal"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

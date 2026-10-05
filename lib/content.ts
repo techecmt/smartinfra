@@ -23,15 +23,25 @@ export const company = {
   tagline: "Expert management, energy efficient.",
 } as const;
 
-export type NavItem = { id: string; label: string };
+export const supplyPath = "/supply-installation";
+
+// `href` marks an entry that has its own page; the rest are home-page sections.
+export type NavItem = { id: string; label: string; href?: string };
 
 export const navItems: NavItem[] = [
   { id: "about", label: "About" },
   { id: "capabilities", label: "Capabilities" },
   { id: "services", label: "Services" },
+  { id: "supply", label: "Supply & Install", href: supplyPath },
   { id: "approach", label: "Approach" },
   { id: "contact", label: "Contact" },
 ];
+
+/** Sections live on the home page; sub-pages only carry their own contact block. */
+export function navHref(item: NavItem, home: boolean) {
+  if (item.href) return item.href;
+  return home || item.id === "contact" ? `#${item.id}` : `/#${item.id}`;
+}
 
 export type Capability = {
   no: string;

@@ -36,7 +36,7 @@ const skyline = [
   { x: 1314, w: 126, h: 110 },
 ];
 
-export function ContactCTA() {
+export function ContactCTA({ index = "09" }: { index?: string }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -87,7 +87,7 @@ export function ContactCTA() {
 
       <div className="container-site">
         <SectionMarker
-          index="08"
+          index={index}
           label="Contact"
           meta="Bukit Batok / SG"
           tone="dark"

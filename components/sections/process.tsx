@@ -37,7 +37,7 @@ export function Process() {
       className="relative bg-paper py-24 sm:py-32"
     >
       <div className="container-site">
-        <SectionMarker index="07" label="Approach" meta="Delivery sequence" />
+        <SectionMarker index="08" label="Approach" meta="Delivery sequence" />
 
         <div className="mt-14 grid grid-cols-1 gap-8 lg:mt-20 lg:grid-cols-12">
           <SectionHeading

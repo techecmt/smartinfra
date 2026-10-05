@@ -40,7 +40,7 @@ export function SmartInfrastructureVisual() {
 
           <div className="container-site relative flex min-h-0 flex-1 flex-col">
             <SectionMarker
-              index="05"
+              index="06"
               label="Smart infrastructure"
               meta="System diagram / SG"
             />

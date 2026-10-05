@@ -4,6 +4,7 @@ import { About } from "@/components/sections/about";
 import { Capabilities } from "@/components/sections/capabilities";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { Renovation } from "@/components/sections/renovation";
+import { SupplyInstallation } from "@/components/sections/supply-installation";
 import { SmartInfrastructureVisual } from "@/components/sections/smart-infrastructure-visual";
 import { WhySmart } from "@/components/sections/why-smart";
 import { Process } from "@/components/sections/process";
@@ -27,6 +28,7 @@ export default function Home() {
         <Capabilities />
         <ServicesGrid />
         <Renovation />
+        <SupplyInstallation />
         <SmartInfrastructureVisual />
         <WhySmart />
         <Process />

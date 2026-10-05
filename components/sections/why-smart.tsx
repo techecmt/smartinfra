@@ -118,7 +118,7 @@ export function WhySmart() {
       className="relative bg-white py-24 sm:py-32"
     >
       <div className="container-site">
-        <SectionMarker index="06" label="Why us" meta="Principles" />
+        <SectionMarker index="07" label="Why us" meta="Principles" />
 
         <div className="mt-14 grid grid-cols-1 gap-14 lg:mt-20 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">

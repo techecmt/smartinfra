@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   AnimatePresence,
   motion,
@@ -9,12 +10,12 @@ import {
   useSpring,
 } from "motion/react";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
-import { company, navItems } from "@/lib/content";
+import { company, navHref, navItems } from "@/lib/content";
 import { easeArchitect } from "@/lib/motion";
 import { Logo } from "@/components/ui/logo";
 import { MagneticLink } from "@/components/ui/magnetic-link";
 
-export function Navbar() {
+export function Navbar({ home = true }: { home?: boolean }) {
   const { scrollY, scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
     stiffness: 140,
@@ -60,43 +61,48 @@ export function Navbar() {
             scrolled ? "h-[4.5rem]" : "h-20 lg:h-24"
           }`}
         >
-          <a
-            href="#top"
+          <Link
+            href={home ? "#top" : "/"}
             className="flex items-center gap-4"
             onClick={() => setOpen(false)}
-            aria-label="Smart Infratech — back to top"
+            aria-label={
+              home ? "Smart Infratech — back to top" : "Smart Infratech — home"
+            }
           >
             <Logo
               priority
               className={`w-auto transition-[height] duration-500 ${scrolled ? "h-14" : "h-16 lg:h-20"}`}
             />
-            <span className="label-tech hidden border-l border-rule pl-4 leading-[1.35] text-ink-muted sm:block">
+            <span className="label-tech hidden border-l border-rule pl-4 leading-[1.35] text-ink-muted sm:block lg:hidden xl:block">
               Pte. Ltd.
               <br />
               Singapore
             </span>
-          </a>
+          </Link>
 
           <ul className="hidden items-center gap-1 lg:flex">
             {navItems.map((item) => {
-              const isActive = active === item.id;
+              const onPage = Boolean(item.href) && !home;
+              const isActive = onPage || active === item.id;
               return (
                 <li key={item.id}>
-                  <a
-                    href={`#${item.id}`}
-                    aria-current={isActive ? "true" : undefined}
-                    className="group relative block px-4 py-2 text-[0.9rem] text-ink"
+                  <Link
+                    href={navHref(item, home)}
+                    aria-current={
+                      onPage ? "page" : isActive ? "true" : undefined
+                    }
+                    className="group relative block px-3 py-2 text-[0.9rem] whitespace-nowrap text-ink xl:px-4"
                   >
                     {item.label}
                     <span
                       aria-hidden
-                      className={`absolute right-4 bottom-1 left-4 h-px origin-left bg-signal transition-transform duration-500 ease-(--ease-architect) ${
+                      className={`absolute right-3 bottom-1 left-3 h-px origin-left bg-signal transition-transform duration-500 ease-(--ease-architect) xl:right-4 xl:left-4 ${
                         isActive
                           ? "scale-x-100"
                           : "scale-x-0 group-hover:scale-x-100"
                       }`}
                     />
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -178,17 +184,17 @@ export function Navbar() {
                   }}
                   className="border-b border-rule"
                 >
-                  <a
-                    href={`#${item.id}`}
+                  <Link
+                    href={navHref(item, home)}
                     onClick={() => setOpen(false)}
-                    className="flex items-baseline gap-4 py-4 font-display text-4xl font-medium tracking-tight text-ink"
+                    className="flex items-baseline gap-4 py-3.5 font-display text-[2rem] font-medium tracking-tight text-ink sm:text-4xl"
                   >
                     <span
                       aria-hidden
                       className="h-px w-5 self-center bg-signal"
                     />
                     {item.label}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>

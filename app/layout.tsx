@@ -22,6 +22,7 @@ const description =
   "Smart Infratech Pte. Ltd. provides construction, engineering, M&E, renovation, inspection, consultancy and infrastructure-related solutions for commercial and private environments in Singapore.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.smartinfra.com.sg"),
   title,
   description,
   applicationName: "Smart Infratech",
@@ -50,7 +51,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
     >
-      <body className="min-h-dvh bg-white text-ink">
+      {/* Browser extensions add attributes to <body> before React hydrates. */}
+      <body className="min-h-dvh bg-white text-ink" suppressHydrationWarning>
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
