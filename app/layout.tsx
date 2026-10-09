@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
+import { company } from "@/lib/content";
 import { MotionProvider } from "@/components/motion-provider";
+import { OfferBanner } from "@/components/layout/offer-banner";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
+import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,13 +22,13 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 const title =
-  "Smart Infratech | Infrastructure, Engineering & Renovation Solutions Singapore";
+  "Smart Infratech | Air Conditioning & Electrical Engineering Singapore";
 const description =
-  "Smart Infratech Pte. Ltd. provides construction, engineering, M&E, renovation, inspection, consultancy and infrastructure-related solutions for commercial and private environments in Singapore.";
+  "Smart Infratech Pte. Ltd. provides aircon servicing, repair and installation, and electrical installation, maintenance and testing for homes and businesses across Singapore.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.smartinfra.com.sg"),
-  title,
+  metadataBase: new URL(company.websiteHref),
+  title: { default: title, template: "%s | Smart Infratech" },
   description,
   applicationName: "Smart Infratech",
   openGraph: {
@@ -40,6 +45,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Re-render hourly so date-bound content (the Year End Offer) switches off
+// by itself once it has ended.
+export const revalidate = 3600;
+
 export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
@@ -53,7 +62,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       {/* Browser extensions add attributes to <body> before React hydrates. */}
       <body className="min-h-dvh bg-white text-ink" suppressHydrationWarning>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <a
+            href="#main"
+            className="sr-only z-[60] bg-ink px-4 py-3 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          >
+            Skip to content
+          </a>
+          <OfferBanner />
+          <Navbar />
+          <main id="main">{children}</main>
+          <Footer />
+          <WhatsAppFab />
+        </MotionProvider>
       </body>
     </html>
   );

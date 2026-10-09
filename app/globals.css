@@ -9,15 +9,17 @@
   --color-ink-deep: #1b1c2a;
   --color-paper: #f5f6f8;
   --color-rule: #e3e5ea;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-deep: #1fbd5a;
 
-  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --ease-architect: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
-  --nav-h: 4.5rem;
   color-scheme: light;
 }
 
@@ -43,8 +45,8 @@ body {
   outline-offset: 3px;
 }
 
-section[id] {
-  scroll-margin-top: 4.5rem;
+[id] {
+  scroll-margin-top: 6rem;
 }
 
 @utility container-site {
@@ -78,7 +80,11 @@ section[id] {
     linear-gradient(to bottom, rgb(37 38 56 / 0.07) 1px, transparent 1px),
     linear-gradient(to right, rgb(37 38 56 / 0.035) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(37 38 56 / 0.035) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
 }
 
 @utility grid-blueprint-dark {
@@ -87,57 +93,39 @@ section[id] {
     linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px),
     linear-gradient(to right, rgb(255 255 255 / 0.025) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(255 255 255 / 0.025) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-}
-
-/* Hover-drawn line illustrations: paths use pathLength="1". */
-.draw-on-hover path,
-.draw-on-hover line,
-.draw-on-hover rect,
-.draw-on-hover circle,
-.draw-on-hover polyline {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.4s var(--ease-architect);
-}
-
-.group:hover .draw-on-hover *,
-.group:focus-within .draw-on-hover * {
-  stroke-dashoffset: 0;
-}
-
-@media (hover: none) {
-  .draw-on-hover * {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(3.2);
-    opacity: 0;
-  }
-}
-
-.pulse-ring {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pulse-ring 2.8s var(--ease-architect) infinite;
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .pulse-ring {
-    animation: none;
-    opacity: 0;
+}
+
+/* Urgent WhatsApp call to action: a green glow with a ring that radiates
+   outward, so the button reads as the one thing to press. */
+@keyframes wa-pulse {
+  0% {
+    box-shadow:
+      0 10px 28px -8px rgb(37 211 102 / 0.75),
+      0 0 0 0 rgb(37 211 102 / 0.6);
   }
-  .draw-on-hover * {
-    transition: none;
+  70%,
+  100% {
+    box-shadow:
+      0 10px 28px -8px rgb(37 211 102 / 0.75),
+      0 0 0 16px rgb(37 211 102 / 0);
+  }
+}
+
+@utility wa-urgent {
+  box-shadow: 0 10px 28px -8px rgb(37 211 102 / 0.75);
+  animation: wa-pulse 1.8s ease-out infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }
