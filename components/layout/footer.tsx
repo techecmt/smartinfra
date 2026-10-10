@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { company, navItems } from "@/lib/content";
 import { Logo } from "@/components/ui/logo";
+import { CookieSettingsButton } from "@/components/layout/cookie-consent";
 
 export function Footer() {
   return (
@@ -80,6 +81,9 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <CookieSettingsButton className="inline-block cursor-pointer py-1.5 hover:underline" />
+              </li>
             </ul>
           </nav>
         </div>
