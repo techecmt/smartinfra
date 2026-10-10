@@ -37,7 +37,7 @@ export function generateMetadata(): Metadata {
       siteName: "Smart Infratech",
       locale: "en_SG",
       type: "website",
-      images: [{ url: photos.aircon.src.src, alt: photos.aircon.alt }],
+      images: [{ url: photos.airconHero.src.src, alt: photos.airconHero.alt }],
     },
   };
 }
@@ -53,7 +53,8 @@ export default function AirconPage() {
         title="Aircon Servicing & Repair in Singapore"
         eyebrow={`${division.name} · ${division.strapline}`}
         intro={division.intro}
-        photo={photos.aircon}
+        photo={photos.airconHero}
+        cover
       >
         <WhatsAppLink
           urgent

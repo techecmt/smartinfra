@@ -6,6 +6,7 @@ import type { StaticImageData } from "next/image";
 import airconOutdoorUnits from "@/public/images/services/aircon-outdoor-units.jpg";
 import rooftopMaintenance from "@/public/images/services/rooftop-aircon-maintenance.jpg";
 import singaporeApartments from "@/public/images/services/singapore-apartments.jpg";
+import airconHero from "@/public/sg_aircon_hero.png";
 import wiring from "@/public/images/services/wiring.jpg";
 import powerTrip from "@/public/images/services/power-trip.jpg";
 
@@ -15,6 +16,11 @@ export const photos = {
   aircon: {
     src: airconOutdoorUnits,
     alt: "Row of wall-mounted air conditioner outdoor units",
+  },
+  // Supplied separately; not part of the CC0 set in CREDITS.md.
+  airconHero: {
+    src: airconHero,
+    alt: "Singapore Rooftop HVAC Technicians",
   },
   electrical: {
     src: wiring,
