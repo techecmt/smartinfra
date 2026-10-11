@@ -5,17 +5,23 @@ import { ArrowLeft, Check, ChevronRight, Minus, Plus, X } from "lucide-react";
 import { company, propertyTypes, whatsappHref } from "@/lib/content";
 import {
   bookingDays,
+  bookingIntents,
   bookingMessage,
   bookingService,
-  bookingServices,
+  brandOptions,
+  brandUnsure,
   contactError,
   estimate,
+  intentOf,
   loadContact,
   maxUnits,
   serviceHint,
   slots,
   storeContact,
+  symptoms,
+  symptomUnsure,
   unitTypes,
+  type BookingIntentId,
   type BookingServiceId,
   type Contact,
 } from "@/lib/booking";
@@ -26,20 +32,17 @@ import { useBooking, type BookingPreset } from "./booking-context";
 import { ServiceIcon } from "./service-icon";
 
 const steps = [
-  { name: "Service", title: "What do you need?" },
+  { name: "Service", title: "What can we help with?" },
   { name: "Details", title: "Tell us about the job" },
   { name: "Date and time", title: "When suits you?" },
   { name: "Your details", title: "Where should we come?" },
 ] as const;
 
-const serviceGroups = [
-  { key: "aircon", label: "Aircon" },
-  { key: "other", label: "Electrical & contracts" },
-] as const;
-
 const fieldLabel = "block font-medium text-ink";
 const input =
   "mt-2 block w-full border border-ink/25 bg-white px-4 py-3 text-base text-ink placeholder:text-ink-muted/80 focus:border-ink max-md:rounded-xl";
+const card =
+  "flex h-full flex-col justify-center border border-ink/25 p-3 text-ink transition-colors peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-signal hover:border-ink max-md:rounded-2xl";
 const chip =
   "flex min-h-11 items-center justify-center border border-ink/25 px-4 py-2 text-[0.95rem] text-ink transition-colors peer-checked:border-ink peer-checked:bg-ink peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-signal peer-disabled:cursor-not-allowed peer-disabled:opacity-40 hover:border-ink max-md:rounded-xl";
 
@@ -61,11 +64,16 @@ export function BookingFlow({
   onClose?: () => void;
 }) {
   const { offerActive } = useBooking();
-  const [step, setStep] = useState(preset?.service ? 1 : 0);
+  const [step, setStep] = useState(0);
   const [sent, setSent] = useState("");
   const [serviceId, setServiceId] = useState<BookingServiceId | null>(
     preset?.service ?? null,
   );
+  const [intentId, setIntentId] = useState<BookingIntentId | null>(
+    preset?.service ? intentOf(preset.service) : null,
+  );
+  const [noticing, setNoticing] = useState<string[]>([]);
+  const [brand, setBrand] = useState(brandUnsure);
   const [unitType, setUnitType] = useState(preset?.unitType ?? 0);
   const [units, setUnits] = useState(1);
   const [property, setProperty] = useState("");
@@ -93,6 +101,7 @@ export function BookingFlow({
     headingRef.current?.focus({ preventScroll: variant === "sheet" });
   }, [step, sent, variant]);
 
+  const intent = bookingIntents.find((i) => i.id === intentId);
   const service = serviceId ? bookingService(serviceId) : null;
   const est = serviceId
     ? estimate({ service: serviceId, unitType, units }, offerActive)
@@ -100,19 +109,36 @@ export function BookingFlow({
   const day = days.find((d) => d.iso === dayIso);
   const slot = slots.find((s) => s.id === slotId);
 
-  const goTo = (next: number, chosen: BookingServiceId | null = serviceId) => {
+  const goTo = (next: number) => {
     setError("");
     setStep(next);
     track("booking_step", {
       booking_step: next + 1,
       booking_step_name: steps[next].name,
-      booking_service: chosen ?? undefined,
+      booking_intent: intentId ?? undefined,
+      booking_service: serviceId ?? undefined,
     });
   };
 
-  const chooseService = (id: BookingServiceId) => {
-    setServiceId(id);
-    goTo(1, id);
+  // An intent with one service selects it; "Servicing" starts on the routine
+  // service; "Something else" waits for the customer to pick.
+  const chooseIntent = (id: BookingIntentId) => {
+    const { services } = bookingIntents.find((i) => i.id === id)!;
+    setIntentId(id);
+    setServiceId(id === "other" ? null : services[0]);
+    setError("");
+  };
+
+  // "Not sure yet" stands alone; picking anything else clears it.
+  const toggleNoticing = (symptom: string) => {
+    setError("");
+    setNoticing((current) =>
+      current.includes(symptom)
+        ? current.filter((s) => s !== symptom)
+        : symptom === symptomUnsure
+          ? [symptomUnsure]
+          : [...current.filter((s) => s !== symptomUnsure), symptom],
+    );
   };
 
   const chooseDay = (iso: string) => {
@@ -123,7 +149,14 @@ export function BookingFlow({
   };
 
   const stepError = () => {
-    if (step === 0) return serviceId ? "" : "Choose the service you need.";
+    if (step === 0)
+      return !intentId
+        ? "Choose what we can help with."
+        : !serviceId
+          ? "Choose the service you need."
+          : serviceId === "repair" && noticing.length === 0
+            ? `Tell us what you are noticing, or choose "${symptomUnsure}".`
+            : "";
     if (step === 1) return property ? "" : "Choose your property type.";
     if (step === 2)
       return !day
@@ -152,6 +185,8 @@ export function BookingFlow({
           service: serviceId,
           unitType,
           units,
+          symptoms: noticing,
+          brand,
           property,
           notes,
           day,
@@ -164,6 +199,7 @@ export function BookingFlow({
     storeContact(remember ? contact : null);
     track("booking_submit", {
       booking_service: serviceId,
+      booking_brand: service?.group === "aircon" ? brand : undefined,
       booking_units: service?.unitsLabel ? units : undefined,
       booking_property: property,
       booking_date: day.iso,
@@ -179,7 +215,9 @@ export function BookingFlow({
   const restart = () => {
     setSent("");
     setStep(0);
+    setIntentId(null);
     setServiceId(null);
+    setNoticing([]);
     setUnits(1);
     setNotes("");
     setDayIso("");
@@ -290,51 +328,127 @@ export function BookingFlow({
           </div>
         ) : null}
 
-        {!sent && step === 0
-          ? serviceGroups.map((group) => (
-              <div key={group.key} className="mt-6 first:mt-0">
-                <p className="label-tech text-ink-muted">{group.label}</p>
-                <ul className="mt-3 grid gap-2">
-                  {bookingServices
-                    .filter((s) => s.group === group.key)
-                    .map((s) => {
-                      const selected = s.id === serviceId;
-                      return (
-                        <li key={s.id}>
-                          <button
-                            type="button"
-                            onClick={() => chooseService(s.id)}
-                            aria-pressed={selected}
-                            className={`flex w-full cursor-pointer items-center gap-4 border p-3 text-left transition-colors hover:border-ink max-md:rounded-2xl ${
-                              selected ? "border-ink bg-paper" : "border-rule"
-                            }`}
-                          >
-                            <span className="grid size-11 shrink-0 place-items-center bg-ink text-white max-md:rounded-xl">
-                              <ServiceIcon id={s.id} />
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block font-medium text-ink">
-                                {s.label}
-                              </span>
-                              <span className="block text-sm text-ink-muted">
-                                {s.blurb}
-                              </span>
-                            </span>
-                            <span className="shrink-0 text-sm font-medium whitespace-nowrap text-ink">
-                              {serviceHint(s.id, offerActive)}
-                            </span>
-                            <ChevronRight
-                              className="size-4 shrink-0 text-signal"
-                              aria-hidden
-                            />
-                          </button>
-                        </li>
-                      );
-                    })}
-                </ul>
+        {!sent && step === 0 ? (
+          <>
+            <fieldset>
+              <legend className="sr-only">What can we help with?</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {bookingIntents.map((i) => (
+                  <label key={i.id} className="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="intent"
+                      value={i.id}
+                      checked={intentId === i.id}
+                      onChange={() => chooseIntent(i.id)}
+                      className="peer sr-only"
+                    />
+                    <span className={card}>
+                      <span className="font-display text-[1.05rem] leading-tight font-medium">
+                        {i.label}
+                      </span>
+                      <span className="mt-1 text-sm leading-snug opacity-75">
+                        {i.blurb}
+                      </span>
+                    </span>
+                  </label>
+                ))}
               </div>
-            ))
-          : null}
+            </fieldset>
+
+            {intent && intent.services.length > 1 ? (
+              <fieldset className="mt-6">
+                <legend className={fieldLabel}>Which service?</legend>
+                <div className="mt-3 grid gap-2">
+                  {intent.services.map((id) => {
+                    const option = bookingService(id);
+                    return (
+                      <label key={id} className="cursor-pointer">
+                        <input
+                          type="radio"
+                          name="service"
+                          value={id}
+                          checked={serviceId === id}
+                          onChange={() => {
+                            setServiceId(id);
+                            setError("");
+                          }}
+                          className="peer sr-only"
+                        />
+                        <span className={`${card} flex-row items-center gap-3`}>
+                          <ServiceIcon id={id} className="size-5 shrink-0" />
+                          <span className="min-w-0 flex-1">
+                            <span className="block font-medium">
+                              {option.label}
+                            </span>
+                            <span className="block text-sm opacity-75">
+                              {option.blurb}
+                            </span>
+                          </span>
+                          <span className="shrink-0 text-sm font-medium whitespace-nowrap">
+                            {serviceHint(id, offerActive)}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            ) : null}
+
+            {serviceId === "repair" ? (
+              <fieldset className="mt-6">
+                <legend className={fieldLabel}>
+                  What are you noticing?{" "}
+                  <span className="text-sm font-normal text-ink-muted">
+                    (tap all that apply)
+                  </span>
+                </legend>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {[...symptoms, symptomUnsure].map((symptom) => (
+                    <label
+                      key={symptom}
+                      className={`cursor-pointer ${symptom === symptomUnsure ? "col-span-2" : ""}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={noticing.includes(symptom)}
+                        onChange={() => toggleNoticing(symptom)}
+                        className="peer sr-only"
+                      />
+                      <span
+                        className={`${chip} px-2 text-center ${symptom === symptomUnsure ? "border-dashed" : ""}`}
+                      >
+                        {symptom}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
+
+            {service?.group === "aircon" ? (
+              <div className="mt-6">
+                <label htmlFor={`${ids}-brand`} className={fieldLabel}>
+                  Which brand is it?{" "}
+                  <span className="text-sm font-normal text-ink-muted">
+                    (optional)
+                  </span>
+                </label>
+                <select
+                  id={`${ids}-brand`}
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                  className={input}
+                >
+                  {brandOptions.map((option) => (
+                    <option key={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+            ) : null}
+          </>
+        ) : null}
 
         {!sent && step === 1 && service ? (
           <>

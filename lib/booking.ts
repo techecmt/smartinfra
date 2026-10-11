@@ -2,6 +2,7 @@
 // requestable dates and time windows, and the WhatsApp booking message.
 // Nothing is sent to a server; a booking is a prefilled WhatsApp message.
 
+import { featuredBrands, otherBrands } from "./aircon-seo";
 import {
   chemicalOverhaul,
   formatPrice,
@@ -94,6 +95,67 @@ export const bookingServices: BookingService[] = [
 
 export const bookingService = (id: BookingServiceId) =>
   bookingServices.find((s) => s.id === id)!;
+
+export type BookingIntentId = "fault" | "servicing" | "install" | "other";
+
+/** The wizard's opening question, each answer leading to one or more services. */
+export const bookingIntents: {
+  id: BookingIntentId;
+  label: string;
+  blurb: string;
+  services: BookingServiceId[];
+}[] = [
+  {
+    id: "fault",
+    label: "Something's wrong",
+    blurb: "Not cooling, leaking, noisy, error light",
+    services: ["repair"],
+  },
+  {
+    id: "servicing",
+    label: "Servicing",
+    blurb: "Routine clean or chemical overhaul",
+    services: ["servicing", "overhaul"],
+  },
+  {
+    id: "install",
+    label: "Install or replace",
+    blurb: "New or reconditioned unit, replacement",
+    services: ["install"],
+  },
+  {
+    id: "other",
+    label: "Something else",
+    blurb: "Gas top-up, electrical, maintenance contract",
+    services: ["gas", "electrical", "contract"],
+  },
+];
+
+export const intentOf = (service: BookingServiceId) =>
+  bookingIntents.find((i) => i.services.includes(service))!.id;
+
+/** What the customer is noticing, for fault bookings. */
+export const symptoms = [
+  "Not cold",
+  "Leaking water",
+  "Weak airflow",
+  "Bad smell",
+  "Won't turn on",
+  "Noisy unit",
+  "Blinking light",
+  "Switches off",
+  "One room warm",
+  "Tripping breaker",
+];
+export const symptomUnsure = "Not sure yet";
+
+export const brandUnsure = "Not sure";
+export const brandOptions = [
+  brandUnsure,
+  ...featuredBrands,
+  ...otherBrands,
+  "Other",
+];
 
 /** Unit types that general servicing is priced by. */
 export const unitTypes = servicingTiers.map((t) => t.title);
@@ -332,6 +394,10 @@ export type BookingDetails = {
   service: BookingServiceId;
   unitType: number;
   units: number;
+  /** What the customer is noticing; fault bookings only. */
+  symptoms: string[];
+  /** Aircon brand, or `brandUnsure`. */
+  brand: string;
   property: string;
   notes: string;
   day: BookingDay;
@@ -349,6 +415,12 @@ export function bookingMessage(b: BookingDetails, offerActive: boolean) {
   return [
     "Booking request — Smart Infratech",
     `Service: ${service.label}${b.service === "servicing" ? ` (${unitTypes[b.unitType]})` : ""}`,
+    b.service === "repair" && b.symptoms.length > 0
+      ? `Noticing: ${b.symptoms.join(", ")}`
+      : null,
+    service.group === "aircon" && b.brand !== brandUnsure
+      ? `Brand: ${b.brand}`
+      : null,
     service.unitsLabel ? `Units: ${b.units}` : null,
     `Property: ${b.property}`,
     `Preferred date: ${b.day.long}`,
