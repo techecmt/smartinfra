@@ -12,6 +12,7 @@ import {
 } from "@/lib/rates";
 import { photos, type Photo } from "@/lib/photos";
 import { ButtonLink, WhatsAppLink } from "@/components/ui/buttons";
+import { BookButton } from "@/components/booking/book-button";
 import { Price } from "@/components/ui/price";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionMarker } from "@/components/ui/section-heading";
@@ -75,15 +76,12 @@ export default function Home() {
               businesses across Singapore.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <WhatsAppLink
-                urgent
-                text={active ? offerWhatsappText : undefined}
-              >
-                WhatsApp Us Now
+              <BookButton preset={{ source: "home_hero" }}>
+                Book a Service
+              </BookButton>
+              <WhatsAppLink text={active ? offerWhatsappText : undefined}>
+                WhatsApp Us
               </WhatsAppLink>
-              <ButtonLink href="#services" variant="outline">
-                Explore Services
-              </ButtonLink>
             </div>
           </div>
 

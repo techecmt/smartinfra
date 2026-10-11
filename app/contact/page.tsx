@@ -15,7 +15,7 @@ export default function ContactPage() {
     <QuoteSection
       as="h1"
       title="Contact us for a quotation"
-      intro="Pick the service and property type, add any details, and your enquiry opens in WhatsApp ready to send. You can attach photos or a video of the fault there."
+      intro="Pick the service, a preferred date and time, and where to come. Your booking opens in WhatsApp ready to send, and you can attach photos or a video of the fault there."
     />
   );
 }

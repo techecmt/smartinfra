@@ -10,6 +10,7 @@ export function PageHeader({
   intro,
   photo,
   cover = false,
+  meta,
   children,
 }: {
   crumb: string;
@@ -19,6 +20,8 @@ export function PageHeader({
   photo?: Photo;
   /** Run the photo full-bleed behind the text instead of beside it. */
   cover?: boolean;
+  /** Small line under the actions, e.g. a starting price and opening hours. */
+  meta?: string;
   children?: React.ReactNode;
 }) {
   const onPhoto = cover && photo;
@@ -54,7 +57,7 @@ export function PageHeader({
         />
       )}
       <div
-        className={`container-site grid grid-cols-1 items-center gap-10 lg:grid-cols-12 ${onPhoto ? "min-h-[calc(100svh-7.25rem)] py-16 sm:py-24" : "py-14 sm:py-20"}`}
+        className={`container-site grid grid-cols-1 items-center gap-10 lg:grid-cols-12 ${onPhoto ? "py-10 sm:py-24 md:min-h-[calc(100svh-7.25rem)]" : "py-10 sm:py-20"}`}
       >
         <div className="lg:col-span-7">
           <nav aria-label="Breadcrumb">
@@ -80,26 +83,36 @@ export function PageHeader({
           </nav>
           <h1
             id="page-heading"
-            className={`mt-8 font-display text-[2.5rem] leading-[1.02] font-medium tracking-[-0.035em] sm:text-6xl ${onPhoto ? "text-white" : "text-ink"}`}
+            className={`mt-6 font-display text-[2.25rem] leading-[1.02] font-medium tracking-[-0.035em] sm:mt-8 sm:text-6xl ${onPhoto ? "text-white" : "text-ink"}`}
           >
             {title}
           </h1>
           {eyebrow ? (
             <p
-              className={`mt-4 font-display text-lg sm:text-xl ${onPhoto ? "text-white" : "text-ink"}`}
+              className={`mt-4 font-display text-lg sm:text-xl ${onPhoto ? "text-white max-sm:hidden" : "text-ink"}`}
             >
               {eyebrow}
             </p>
           ) : null}
           <p
-            className={`mt-5 max-w-2xl text-lg leading-relaxed ${onPhoto ? "text-white/85" : "text-ink-muted"}`}
+            className={`mt-4 max-w-2xl leading-relaxed sm:mt-5 sm:text-lg ${onPhoto ? "text-white/85" : "text-ink-muted"}`}
           >
             {intro}
           </p>
           {children ? (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div
+              data-book-anchor
+              className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:items-center"
+            >
               {children}
             </div>
+          ) : null}
+          {meta ? (
+            <p
+              className={`label-tech mt-5 ${onPhoto ? "text-white/70" : "text-ink-muted"}`}
+            >
+              {meta}
+            </p>
           ) : null}
         </div>
 

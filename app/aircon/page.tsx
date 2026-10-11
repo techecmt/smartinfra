@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { divisions } from "@/lib/content";
+import { company, divisions } from "@/lib/content";
 import { airconFaqs, airconJsonLd } from "@/lib/aircon-seo";
 import { photos } from "@/lib/photos";
 import {
@@ -8,10 +8,13 @@ import {
   offerPrice,
   servicingTiers,
 } from "@/lib/rates";
-import { ButtonLink, WhatsAppLink } from "@/components/ui/buttons";
+import { ButtonLink } from "@/components/ui/buttons";
+import { BookBar } from "@/components/booking/book-bar";
+import { BookButton } from "@/components/booking/book-button";
 import { JsonLd } from "@/components/ui/json-ld";
 import { PageHeader } from "@/components/layout/page-header";
 import { AirconBrands, AirconGuide } from "@/components/sections/aircon-guide";
+import { AirconPicker } from "@/components/sections/aircon-picker";
 import { Catalogue } from "@/components/sections/catalogue";
 import { FaqSection } from "@/components/sections/faq";
 import { Gallery } from "@/components/sections/gallery";
@@ -45,6 +48,8 @@ export function generateMetadata(): Metadata {
 export default function AirconPage() {
   const division = divisions.aircon;
   const active = isOfferActive();
+  const base = servicingTiers[0].tiers[0];
+  const from = `From ${formatPrice(active ? offerPrice(base) : base)}`;
   return (
     <>
       <JsonLd data={airconJsonLd(active)} />
@@ -55,17 +60,19 @@ export default function AirconPage() {
         intro={division.intro}
         photo={photos.airconHero}
         cover
+        meta={`Servicing ${from.toLowerCase()} · ${company.hours}`}
       >
-        <WhatsAppLink
-          urgent
-          text="Hello Smart Infratech, I would like to enquire about aircon servicing / repair."
+        <BookButton
+          variant="light"
+          preset={{ service: "servicing", source: "aircon_hero" }}
         >
-          WhatsApp Us Now
-        </WhatsAppLink>
-        <ButtonLink href="#rates" variant="outline">
+          Book Aircon Service
+        </BookButton>
+        <ButtonLink href="#rates" variant="light">
           See Aircon Rates
         </ButtonLink>
       </PageHeader>
+      <AirconPicker active={active} />
       <AirconGuide index="01" active={active} />
       <AirconBrands index="02" />
       <Rates index="03" active={active} />
@@ -81,8 +88,13 @@ export default function AirconPage() {
         faqs={airconFaqs(active)}
       />
       <QuoteSection
-        defaultService="Aircon Servicing"
+        service="servicing"
         title="Book aircon servicing or repair"
+      />
+      <BookBar
+        label="Aircon servicing"
+        price={from}
+        preset={{ service: "servicing", source: "book_bar" }}
       />
     </>
   );

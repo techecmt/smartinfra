@@ -3,10 +3,13 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { company } from "@/lib/content";
 import { consentDefaultScript } from "@/lib/consent";
+import { isOfferActive } from "@/lib/rates";
 import { MotionProvider } from "@/components/motion-provider";
+import { BookingProvider } from "@/components/booking/booking-provider";
 import { OfferBanner } from "@/components/layout/offer-banner";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { TabBar } from "@/components/layout/tab-bar";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import "./globals.css";
@@ -56,6 +59,8 @@ const gtmId = "GTM-NJDFNMLV";
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
+  // Lets the phone tab bar pad itself clear of the home indicator.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -71,7 +76,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <GoogleTagManager gtmId={gtmId} />
       {/* Browser extensions add attributes to <body> before React hydrates. */}
-      <body className="min-h-dvh bg-white text-ink" suppressHydrationWarning>
+      <body
+        className="min-h-dvh bg-white pb-(--tabbar) text-ink"
+        suppressHydrationWarning
+      >
         <noscript>
           <iframe
             src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
@@ -87,12 +95,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             Skip to content
           </a>
-          <OfferBanner />
-          <Navbar />
-          <main id="main">{children}</main>
-          <Footer />
-          <WhatsAppFab />
-          <CookieConsent />
+          <BookingProvider offerActive={isOfferActive()}>
+            <OfferBanner />
+            <Navbar />
+            <main id="main">{children}</main>
+            <Footer />
+            <TabBar />
+            <WhatsAppFab />
+            <CookieConsent />
+          </BookingProvider>
         </MotionProvider>
       </body>
     </html>

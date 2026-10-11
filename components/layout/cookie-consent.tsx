@@ -60,7 +60,7 @@ function ConsentPanel({
   return (
     <section
       aria-labelledby={headingId}
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-rule bg-white text-ink shadow-[0_-12px_40px_-16px_rgb(37_38_56/0.35)] sm:inset-x-auto sm:bottom-6 sm:left-6 sm:w-[26rem] sm:border"
+      className="fixed inset-x-0 bottom-(--tabbar) z-50 border-t border-rule bg-white text-ink shadow-[0_-12px_40px_-16px_rgb(37_38_56/0.35)] sm:inset-x-auto sm:bottom-[calc(var(--tabbar)+1.5rem)] sm:left-6 sm:w-[26rem] sm:border"
     >
       <div aria-hidden className="h-px w-full bg-signal" />
       <div className="max-h-[80dvh] overflow-y-auto p-5 sm:p-6">

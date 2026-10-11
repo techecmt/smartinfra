@@ -12,6 +12,7 @@ import {
   type RepairPrice,
 } from "@/lib/rates";
 import { WhatsAppLink } from "@/components/ui/buttons";
+import { BookButton } from "@/components/booking/book-button";
 import { OfferTag, Price } from "@/components/ui/price";
 import { SectionMarker } from "@/components/ui/section-heading";
 
@@ -51,12 +52,12 @@ export function Rates({ index, active }: { index: string; active: boolean }) {
 
         {/* Servicing */}
         <h3 className={`mt-14 ${h3}`}>Servicing</h3>
-        <ul className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {servicingTiers.map((card) => (
+        <ul className="relative -mx-4 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-1 md:gap-6 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
+          {servicingTiers.map((card, unitType) => (
             <li
               key={card.title}
               data-surface="dark"
-              className="flex flex-col border border-ink"
+              className="flex flex-col border border-ink max-md:w-[84%] max-md:shrink-0 max-md:snap-center max-md:overflow-hidden max-md:rounded-2xl"
             >
               <div className="bg-ink p-6 text-white sm:p-8">
                 <h4 className={cardTitle}>{card.title}</h4>
@@ -85,17 +86,17 @@ export function Rates({ index, active }: { index: string; active: boolean }) {
                 ))}
               </dl>
               <div className="bg-white px-6 pb-6 sm:px-8 sm:pb-8">
-                <WhatsAppLink
-                  text={rateEnquiry(`${card.title} servicing`, active)}
+                <BookButton
+                  preset={{ service: "servicing", unitType, source: "rates" }}
                   className="w-full"
                 >
                   Book Servicing
-                </WhatsAppLink>
+                </BookButton>
               </div>
             </li>
           ))}
 
-          <li className="flex flex-col border border-rule">
+          <li className="flex flex-col border border-rule max-md:w-[84%] max-md:shrink-0 max-md:snap-center max-md:overflow-hidden max-md:rounded-2xl">
             <div className="bg-paper p-6 text-ink sm:p-8">
               <h4 className={cardTitle}>{chemicalOverhaul.title}</h4>
               <p className="mt-4 flex items-baseline gap-3">
@@ -109,12 +110,12 @@ export function Rates({ index, active }: { index: string; active: boolean }) {
             </div>
             <PointList points={chemicalOverhaul.points} />
             <div className="px-6 pb-6 sm:px-8 sm:pb-8">
-              <WhatsAppLink
-                text={rateEnquiry(chemicalOverhaul.title, active)}
+              <BookButton
+                preset={{ service: "overhaul", source: "rates" }}
                 className="w-full"
               >
                 Book Overhaul
-              </WhatsAppLink>
+              </BookButton>
             </div>
           </li>
         </ul>
@@ -131,7 +132,7 @@ export function Rates({ index, active }: { index: string; active: boolean }) {
           . Final cost depends on fault type and parts required. We quote before
           starting.
         </p>
-        <div className="mt-6 overflow-x-auto border border-rule">
+        <div className="mt-6 overflow-x-auto border border-rule max-md:rounded-2xl">
           <table className="w-full min-w-[36rem] border-collapse text-left">
             <thead>
               <tr className="bg-ink text-white">
@@ -171,11 +172,11 @@ export function Rates({ index, active }: { index: string; active: boolean }) {
           All-in pricing — includes the brand-new unit and complete professional
           installation.
         </p>
-        <ul className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <ul className="relative -mx-4 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-1 md:gap-6 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
           {installRates.map((card, i) => (
             <li
               key={card.title}
-              className={`flex flex-col border ${i === 1 ? "border-rule" : "border-ink"}`}
+              className={`flex flex-col border max-md:w-[84%] max-md:shrink-0 max-md:snap-center max-md:overflow-hidden max-md:rounded-2xl ${i === 1 ? "border-rule" : "border-ink"}`}
             >
               <div
                 data-surface={i === 1 ? undefined : "dark"}

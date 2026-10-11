@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { brandDisclaimer, featuredBrands, otherBrands } from "@/lib/aircon-seo";
 import { chemicalOverhaul, repairFrom, servicingTiers } from "@/lib/rates";
+import { MobileCollapse } from "@/components/ui/mobile-collapse";
 import { Price } from "@/components/ui/price";
 import { SectionMarker } from "@/components/ui/section-heading";
 
@@ -30,8 +31,8 @@ export function AirconGuide({
           Aircon servicing, chemical wash, repair and maintenance
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-2">
-          <Topic id="servicing" title="Aircon servicing">
+        <div className="mt-10 grid grid-cols-1 gap-x-10 border-ink max-md:border-b-2 md:mt-12 md:grid-cols-2 md:gap-y-12">
+          <Topic id="servicing" title="Aircon servicing" defaultOpen>
             <p>
               Regular aircon servicing keeps a unit cooling properly and heads
               off the usual complaints: weak airflow, a musty smell, or water
@@ -117,21 +118,20 @@ export function AirconGuide({
 function Topic({
   id,
   title,
+  defaultOpen,
   children,
 }: {
   id: string;
   title: string;
+  defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <article id={id} className="border-t-2 border-ink pt-6">
-      <h3 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
-        {title}
-      </h3>
-      <div className="mt-3 space-y-4 leading-relaxed text-ink-muted">
+    <MobileCollapse id={id} title={title} defaultOpen={defaultOpen}>
+      <div className="space-y-4 leading-relaxed text-ink-muted md:mt-3">
         {children}
       </div>
-    </article>
+    </MobileCollapse>
   );
 }
 

@@ -1,4 +1,5 @@
 import type { Division } from "@/lib/content";
+import { MobileCollapse } from "@/components/ui/mobile-collapse";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionMarker } from "@/components/ui/section-heading";
 
@@ -27,15 +28,11 @@ export function ServiceGroups({
           {heading ?? `What ${division.name} covers`}
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-x-10 border-ink max-md:border-b-2 md:mt-12 md:grid-cols-2 md:gap-y-12">
           {division.groups.map((group, i) => (
             <Reveal key={group.title} delay={(i % 2) * 0.08}>
-              <article className="border-t-2 border-ink pt-6">
-                <h3 className="font-display text-2xl font-medium tracking-[-0.02em] text-ink">
-                  {group.title}
-                </h3>
-                <p className="mt-2 text-ink-muted">{group.summary}</p>
-                <ul className="mt-5 border-b border-rule">
+              <MobileCollapse title={group.title} summary={group.summary}>
+                <ul className="border-b border-rule md:mt-5">
                   {group.items.map((item) => (
                     <li
                       key={item}
@@ -49,7 +46,7 @@ export function ServiceGroups({
                     </li>
                   ))}
                 </ul>
-              </article>
+              </MobileCollapse>
             </Reveal>
           ))}
         </div>

@@ -15,7 +15,7 @@ export default function ElectricalPage() {
   return (
     <DivisionPage
       division={divisions.electrical}
-      defaultService="Electrical Installation / Troubleshooting"
+      service="electrical"
     />
   );
 }

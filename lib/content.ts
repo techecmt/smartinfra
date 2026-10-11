@@ -171,19 +171,8 @@ export const divisionList: Division[] = [
   divisions.electrical,
 ];
 
-/** Enquiry form options. Order and wording follow the company's enquiry sheet. */
-export const quoteServices = [
-  { label: "Aircon Servicing", needsUnits: true },
-  { label: "Aircon Troubleshooting / Repair", needsUnits: true },
-  { label: "Used Aircon Supply & Installation", needsUnits: true },
-  { label: "Electrical Installation / Troubleshooting", needsUnits: false },
-  { label: "Commercial Maintenance Contract", needsUnits: true },
-] as const;
-
-export type QuoteService = (typeof quoteServices)[number]["label"];
-
+/** Property types offered in the booking wizard. */
 export const propertyTypes = ["HDB", "Condo", "Landed", "Commercial"] as const;
-export const unitCounts = ["1", "2", "3", "4+", "N/A"] as const;
 
 export type Step = { no: string; title: string; description: string };
 

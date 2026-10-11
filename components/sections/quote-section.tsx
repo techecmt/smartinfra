@@ -1,15 +1,17 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { company, type QuoteService } from "@/lib/content";
-import { QuoteForm } from "@/components/forms/quote-form";
+import { company } from "@/lib/content";
+import type { BookingServiceId } from "@/lib/booking";
+import { BookingFlow } from "@/components/booking/booking-flow";
 
-/** Enquiry form with the company's direct contact details alongside. */
+/** Booking wizard with the company's direct contact details alongside. */
 export function QuoteSection({
-  defaultService,
+  service,
   as: Heading = "h2",
   title = "Get a service quotation",
-  intro = "Tell us what you need in a few taps. Your enquiry opens in WhatsApp, ready to send.",
+  intro = "Pick the service, a preferred date and time, and where to come. Your booking opens in WhatsApp, ready to send.",
 }: {
-  defaultService?: QuoteService;
+  /** Service the wizard starts with; omitted, it starts at the service list. */
+  service?: BookingServiceId;
   as?: "h1" | "h2";
   title?: string;
   intro?: string;
@@ -24,7 +26,7 @@ export function QuoteSection({
         <div className="lg:col-span-4">
           <p className="label-tech flex items-center gap-3 text-ink-muted">
             <span aria-hidden className="h-px w-6 bg-signal" />
-            Enquiry
+            Booking
           </p>
           <Heading
             id="quote-heading"
@@ -79,7 +81,13 @@ export function QuoteSection({
         </div>
 
         <div className="lg:col-span-7 lg:col-start-6">
-          <QuoteForm defaultService={defaultService} />
+          <div className="border border-rule bg-white max-md:overflow-hidden max-md:rounded-2xl">
+            <BookingFlow
+              variant="inline"
+              headingId="booking-steps-heading"
+              preset={service ? { service } : undefined}
+            />
+          </div>
         </div>
       </div>
     </section>

@@ -3,8 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { defaultWhatsappText, whatsappHref } from "@/lib/content";
 import { WhatsAppIcon } from "./whatsapp-icon";
 
-const base =
-  "inline-flex min-h-12 items-center justify-center gap-3 px-6 py-3 text-[0.95rem] font-medium transition-colors";
+// Corners soften on phones, where the site takes on an app-style shell.
+export const buttonBase =
+  "inline-flex min-h-12 items-center justify-center gap-3 px-6 py-3 text-[0.95rem] font-medium transition-colors max-md:rounded-xl";
+const base = buttonBase;
 
 /**
  * Primary call to action: opens a WhatsApp chat with the company number.

@@ -31,9 +31,12 @@ export function Gallery({
         >
           Before and after
         </h2>
-        <ul className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2">
+        <ul className="relative -mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:mt-12 md:grid md:grid-cols-1 md:gap-10 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-2">
           {entries.map((entry) => (
-            <li key={entry.id}>
+            <li
+              key={entry.id}
+              className="max-md:w-[84%] max-md:shrink-0 max-md:snap-center"
+            >
               <figure>
                 <div className="grid grid-cols-2 gap-1">
                   <Photo

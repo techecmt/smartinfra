@@ -4,7 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { Mail, Phone } from "lucide-react";
+import {
+  Building2,
+  CalendarCheck,
+  House,
+  Mail,
+  Phone,
+  Snowflake,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import {
   company,
   defaultWhatsappText,
@@ -16,6 +25,15 @@ import { Logo } from "@/components/ui/logo";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 
 const mobileItems = [{ href: "/", label: "Home" }, ...navItems];
+
+const navIcons: Record<string, LucideIcon> = {
+  "/": House,
+  "/about": Building2,
+  "/aircon": Snowflake,
+  "/electrical": Zap,
+  "/maintenance-plans": CalendarCheck,
+  "/contact": Phone,
+};
 
 export function Navbar() {
   const pathname = usePathname();
@@ -39,7 +57,7 @@ export function Navbar() {
       <header className="sticky top-0 z-50 border-b border-rule bg-white">
         <nav
           aria-label="Primary"
-          className="container-site flex h-[4.5rem] items-center justify-between gap-6"
+          className="container-site flex h-14 items-center justify-between gap-6 md:h-[4.5rem]"
         >
           <Link
             href="/"
@@ -47,7 +65,7 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             aria-label="Smart Infratech — home"
           >
-            <Logo priority className="h-14 w-auto" />
+            <Logo priority className="h-11 w-auto md:h-14" />
             <span className="label-tech hidden border-l border-rule pl-4 leading-[1.35] text-ink-muted xl:block">
               Air Conditioning &amp;
               <br />
@@ -58,13 +76,25 @@ export function Navbar() {
           <ul className="hidden items-center lg:flex">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
+              const Icon = navIcons[item.href];
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
-                    className="group relative block px-3 py-2 text-[0.9rem] whitespace-nowrap text-ink"
+                    className="group relative flex items-center gap-1.5 px-3 py-2 text-[0.9rem] whitespace-nowrap text-ink"
                   >
+                    {Icon ? (
+                      <Icon
+                        aria-hidden
+                        strokeWidth={1.75}
+                        className={`size-4 shrink-0 transition-colors ${
+                          isActive
+                            ? "text-signal"
+                            : "text-ink/45 group-hover:text-signal"
+                        }`}
+                      />
+                    ) : null}
                     {item.label}
                     <span
                       aria-hidden
@@ -80,7 +110,14 @@ export function Navbar() {
             })}
           </ul>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
+            <a
+              href={company.phoneHref}
+              aria-label={`Call ${company.phone}`}
+              className="grid size-11 place-items-center rounded-xl border border-rule bg-white text-ink md:hidden"
+            >
+              <Phone className="size-5" aria-hidden strokeWidth={1.5} />
+            </a>
             <a
               href={whatsappHref(defaultWhatsappText)}
               target="_blank"
@@ -94,7 +131,7 @@ export function Navbar() {
 
             <button
               type="button"
-              className="relative grid size-11 place-items-center border border-rule bg-white lg:hidden"
+              className="relative grid size-11 place-items-center border border-rule bg-white max-md:rounded-xl lg:hidden"
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -122,7 +159,7 @@ export function Navbar() {
           <motion.div
             id="mobile-menu"
             key="mobile-menu"
-            className="fixed inset-x-0 top-[4.5rem] bottom-0 z-[45] flex flex-col overflow-y-auto bg-white lg:hidden"
+            className="fixed inset-x-0 top-14 bottom-0 z-[45] md:top-[4.5rem] flex flex-col overflow-y-auto bg-white lg:hidden"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -131,6 +168,7 @@ export function Navbar() {
             <ul className="container-site flex flex-1 flex-col justify-center py-8">
               {mobileItems.map((item) => {
                 const isActive = pathname === item.href;
+                const Icon = navIcons[item.href];
                 return (
                   <li key={item.href} className="border-b border-rule">
                     <Link
@@ -139,10 +177,15 @@ export function Navbar() {
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-4 py-3.5 font-display text-2xl font-medium tracking-tight text-ink"
                     >
-                      <span
-                        aria-hidden
-                        className={`h-px w-5 ${isActive ? "bg-signal" : "bg-ink/20"}`}
-                      />
+                      {Icon ? (
+                        <Icon
+                          aria-hidden
+                          strokeWidth={1.75}
+                          className={`size-6 shrink-0 ${
+                            isActive ? "text-signal" : "text-ink/40"
+                          }`}
+                        />
+                      ) : null}
                       {item.label}
                     </Link>
                   </li>
@@ -154,7 +197,7 @@ export function Navbar() {
                 href={whatsappHref(defaultWhatsappText)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-3 bg-whatsapp px-6 font-medium text-ink-deep"
+                className="inline-flex min-h-12 items-center justify-center gap-3 bg-whatsapp px-6 font-medium text-ink-deep max-md:rounded-xl"
               >
                 <WhatsAppIcon className="size-6" />
                 WhatsApp Us

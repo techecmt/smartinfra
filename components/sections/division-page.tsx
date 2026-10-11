@@ -1,6 +1,8 @@
-import type { Division, QuoteService } from "@/lib/content";
+import type { Division } from "@/lib/content";
+import type { BookingServiceId } from "@/lib/booking";
 import { photos } from "@/lib/photos";
-import { ButtonLink, WhatsAppLink } from "@/components/ui/buttons";
+import { ButtonLink } from "@/components/ui/buttons";
+import { BookButton } from "@/components/booking/book-button";
 import { PageHeader } from "@/components/layout/page-header";
 import { Gallery } from "./gallery";
 import { QuoteSection } from "./quote-section";
@@ -9,10 +11,10 @@ import { ServiceGroups } from "./service-groups";
 /** Standard division page body. SMART AirCon composes its own in app/aircon. */
 export function DivisionPage({
   division,
-  defaultService,
+  service,
 }: {
   division: Division;
-  defaultService: QuoteService;
+  service: BookingServiceId;
 }) {
   return (
     <>
@@ -23,21 +25,18 @@ export function DivisionPage({
         intro={division.intro}
         photo={photos[division.key]}
       >
-        <WhatsAppLink
-          urgent
-          text={`Hello Smart Infratech, I would like to enquire about ${division.name} services.`}
-        >
-          WhatsApp Us Now
-        </WhatsAppLink>
-        <ButtonLink href="#quote" variant="outline">
-          Get a Quotation
+        <BookButton preset={{ service, source: "hero" }}>
+          Book a Visit
+        </BookButton>
+        <ButtonLink href="#services" variant="outline">
+          See Services
         </ButtonLink>
       </PageHeader>
       <ServiceGroups division={division} />
       <Gallery division={division.key} index="02" />
       <QuoteSection
-        defaultService={defaultService}
-        title={`Enquire about ${division.name}`}
+        service={service}
+        title={`Book ${division.name}`}
       />
     </>
   );

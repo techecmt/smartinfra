@@ -21,6 +21,14 @@
 
 :root {
   color-scheme: light;
+  /* Height of the phone tab bar; anything docked to the bottom sits above it. */
+  --tabbar: 0px;
+}
+
+@media (width < 48rem) {
+  :root {
+    --tabbar: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 html {

@@ -69,7 +69,7 @@ export default function MaintenancePlansPage() {
       </div>
 
       <QuoteSection
-        defaultService="Commercial Maintenance Contract"
+        service="contract"
         title="Request a plan quotation"
       />
     </>
